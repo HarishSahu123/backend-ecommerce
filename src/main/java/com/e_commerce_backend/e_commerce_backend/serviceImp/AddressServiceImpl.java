@@ -4,11 +4,16 @@ import com.e_commerce_backend.e_commerce_backend.Exception.ResourceNotFoundExcep
 import com.e_commerce_backend.e_commerce_backend.entity.Address;
 import com.e_commerce_backend.e_commerce_backend.entity.Dto.AddressDTO;
 import com.e_commerce_backend.e_commerce_backend.entity.UserEntity;
+import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.AddressResponse;
 import com.e_commerce_backend.e_commerce_backend.repository.AddressRepository;
 import com.e_commerce_backend.e_commerce_backend.repository.UserRepository;
 import com.e_commerce_backend.e_commerce_backend.services.AddressService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -33,6 +38,20 @@ public class AddressServiceImpl implements AddressService {
         address.setUser(user);
         Address savedAddress = addressRepository.save(address);
         return modelMapper.map(savedAddress, AddressDTO.class);
+    }
+
+    @Override
+    public AddressResponse getUserAddress(Long userId) {
+        List<Address> addressesByUserId = addressRepository.findAddressesByUserId(userId);
+        if(addressesByUserId.isEmpty()){
+            throw new ResourceNotFoundException("user", "userId", userId);
+        }
+
+        List<AddressDTO> addressDTOS = addressesByUserId.stream().map(Address -> modelMapper.map(Address, AddressDTO.class))
+                .collect(Collectors.toList());
+        AddressResponse addressResponse=new AddressResponse();
+        addressResponse.setContent(addressDTOS);
+        return addressResponse;
     }
 
 }
