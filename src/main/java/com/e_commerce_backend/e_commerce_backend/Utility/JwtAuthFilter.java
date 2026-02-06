@@ -1,7 +1,5 @@
 package com.e_commerce_backend.e_commerce_backend.Utility;
 
-import com.e_commerce_backend.e_commerce_backend.entity.UserEntity;
-import com.e_commerce_backend.e_commerce_backend.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,16 +28,29 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    // ✅ Skip Swagger & public resources
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-resources")
+                || path.startsWith("/webjars");
+    }
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        String username = null;
-        String token = null;
 
-        // ✅ Extract token from "Authorization: Bearer <token>"
+        String token = null;
+        String username = null;
+
+        // ✅ Extract token
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             try {
@@ -47,36 +58,39 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
                 System.out.println("JWT expired: " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("Invalid token: " + e.getMessage());
+                System.out.println("Invalid JWT: " + e.getMessage());
             }
         }
 
-        // ✅ If username extracted and not already authenticated
+        // ✅ Authenticate if token valid
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(token, userDetails.getUsername())) {
 
-                // ✅ Extract roles from token
                 List<String> roles = jwtUtil.extractRoles(token);
 
                 var authorities = roles.stream()
-                        .map(role -> new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role))
+                        .map(role -> new org.springframework.security.core.authority
+                                .SimpleGrantedAuthority("ROLE_" + role))
                         .collect(Collectors.toList());
 
-                // ✅ Create Authentication object
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                authorities
+                        );
 
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-                // ✅ Set authentication in context
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
-        // ✅ Continue filter chain
         filterChain.doFilter(request, response);
     }
 }
