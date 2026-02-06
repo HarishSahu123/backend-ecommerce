@@ -1,5 +1,6 @@
 package com.e_commerce_backend.e_commerce_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -25,7 +26,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,12 +40,13 @@ public class UserEntity implements UserDetails {
 
 
     // ✅ User owns the relationship — role_id in users table
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
+    @JsonIgnore
     private RoleEntity role;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true ,fetch = FetchType.LAZY)
     private List<Address> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "user" ,cascade = {CascadeType.MERGE,CascadeType.PERSIST} ,orphanRemoval = true)
