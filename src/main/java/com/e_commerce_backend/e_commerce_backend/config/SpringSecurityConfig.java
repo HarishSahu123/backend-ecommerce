@@ -45,7 +45,7 @@ public class SpringSecurityConfig {
                         .requestMatchers(
                                 "/login",
                                 "/sign-up",
-                                "/api/public/**",
+                                "/api/v1/public/**",
 
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
