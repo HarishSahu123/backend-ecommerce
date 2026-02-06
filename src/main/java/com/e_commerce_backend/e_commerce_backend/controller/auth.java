@@ -1,8 +1,9 @@
 package com.e_commerce_backend.e_commerce_backend.controller;
 
+import com.e_commerce_backend.e_commerce_backend.entity.Dto.UserDTO;
 import com.e_commerce_backend.e_commerce_backend.entity.Request.LoginRequestdto;
-import com.e_commerce_backend.e_commerce_backend.entity.UserEntity;
 import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.LoginResponsedto;
+import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.UserResponseDTO;
 import com.e_commerce_backend.e_commerce_backend.serviceImp.AuthService;
 import com.e_commerce_backend.e_commerce_backend.serviceImp.UserRoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.PublicKey;
-
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/public")
 public class auth {
     @Autowired
     private final AuthService authService;
@@ -33,24 +32,17 @@ public class auth {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<UserEntity> signup(@RequestBody UserEntity user){
+    public ResponseEntity<UserResponseDTO> signup(@RequestBody UserDTO user){
         return ResponseEntity.ok(userRoleService.createUser(user));
     }
 
 
 
     @PostMapping("/createUser")
-    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity user){
-        UserEntity user1 = userRoleService.createUser(user);
-        ResponseEntity<UserEntity> userEntityResponseEntity = new ResponseEntity<>(user1, HttpStatus.CREATED);
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserDTO user){
+        UserResponseDTO user1 = userRoleService.createUser(user);
+        ResponseEntity<UserResponseDTO> userEntityResponseEntity = new ResponseEntity<>(user1, HttpStatus.CREATED);
         return userEntityResponseEntity;
     }
-
-
-
-
-
-
-
 
 }
