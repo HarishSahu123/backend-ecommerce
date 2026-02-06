@@ -101,7 +101,17 @@ public class OrderServiceImpl implements OrderService {
             return mapToResponse(savedOrder);
         }
 
-        private OrderResponseDTO mapToResponse(Orders order) {
+    @Override
+    public List<OrderResponseDTO> getAllOrderByUser(Long userId) {
+
+        List<Orders> ordersByUserId = orderRepository.findOrdersByUserId(userId);
+
+        return ordersByUserId.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private OrderResponseDTO mapToResponse(Orders order) {
 
             List<OrderItemResponseDTO> items = order.getOrderItems().stream()
                     .map(item -> OrderItemResponseDTO.builder()

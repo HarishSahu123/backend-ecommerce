@@ -14,6 +14,5 @@ public class OrderResponseDTO {
     private String status;
     private Double totalAmount;
     private Instant createdAt;
-
     private List<OrderItemResponseDTO> items;
 }
