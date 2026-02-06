@@ -1,11 +1,13 @@
 package com.e_commerce_backend.e_commerce_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table
@@ -37,8 +39,9 @@ public class Product {
     @LastModifiedDate
     private LocalDate updateAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore   // 🔥 ADD THIS
     private UserEntity user;
 
     public Long getProduct_id() {
