@@ -13,13 +13,14 @@ import com.e_commerce_backend.e_commerce_backend.repository.OrderRepository;
 import com.e_commerce_backend.e_commerce_backend.repository.ProductRepository;
 import com.e_commerce_backend.e_commerce_backend.repository.UserRepository;
 import com.e_commerce_backend.e_commerce_backend.services.OrderService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -108,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
 
         return ordersByUserId.stream()
                 .map(this::mapToResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private OrderResponseDTO mapToResponse(Orders order) {
@@ -121,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
                             .price(item.getPrice())
                             .totalPrice(item.getPrice() * item.getQuantity())
                             .build())
-                    .toList();
+                    .collect(Collectors.toList());
 
             return OrderResponseDTO.builder()
                     .orderId(order.getId())
