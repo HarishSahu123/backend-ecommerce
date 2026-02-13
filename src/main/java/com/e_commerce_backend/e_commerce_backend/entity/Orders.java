@@ -2,10 +2,8 @@ package com.e_commerce_backend.e_commerce_backend.entity;
 
 import com.e_commerce_backend.e_commerce_backend.entity.Enum.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
 import java.time.LocalDate;

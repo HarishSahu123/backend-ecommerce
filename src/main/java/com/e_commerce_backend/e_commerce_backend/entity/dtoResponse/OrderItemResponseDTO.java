@@ -1,8 +1,5 @@
 package com.e_commerce_backend.e_commerce_backend.entity.dtoResponse;
 
-import com.e_commerce_backend.e_commerce_backend.entity.Orders;
-import com.e_commerce_backend.e_commerce_backend.entity.Product;
-import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Data;
 

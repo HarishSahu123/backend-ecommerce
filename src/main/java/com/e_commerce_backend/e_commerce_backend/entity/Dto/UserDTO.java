@@ -1,9 +1,11 @@
 package com.e_commerce_backend.e_commerce_backend.entity.Dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+
 import lombok.Builder;
 import lombok.Data;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
