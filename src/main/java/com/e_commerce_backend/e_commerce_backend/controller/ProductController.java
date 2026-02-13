@@ -1,23 +1,16 @@
 package com.e_commerce_backend.e_commerce_backend.controller;
 
-import com.e_commerce_backend.e_commerce_backend.Exception.ResourceNotFoundException;
+
 import com.e_commerce_backend.e_commerce_backend.Utility.helperClass.AuthUtil;
 import com.e_commerce_backend.e_commerce_backend.config.AppConstants;
-import com.e_commerce_backend.e_commerce_backend.entity.Category;
-import com.e_commerce_backend.e_commerce_backend.entity.Product;
 import com.e_commerce_backend.e_commerce_backend.entity.Dto.ProductDTO;
 import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.ProductResponse;
 import com.e_commerce_backend.e_commerce_backend.serviceImp.ProductServiceImpl;
-import jakarta.persistence.GeneratedValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-
 import java.io.IOException;
-import java.util.List;
-
 @RestController
 @RequestMapping("/api")
 public class ProductController {
