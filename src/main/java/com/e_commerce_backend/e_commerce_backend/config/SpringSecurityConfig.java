@@ -1,5 +1,6 @@
 package com.e_commerce_backend.e_commerce_backend.config;
 
+
 import com.e_commerce_backend.e_commerce_backend.Utility.AuthEntryPointJwt;
 import com.e_commerce_backend.e_commerce_backend.Utility.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -31,35 +33,25 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf().disable()
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
 
-                .exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(unauthorizedHandler)
-                )
+                .exceptionHandling()
+                .authenticationEntryPoint(unauthorizedHandler)
+                .and()
 
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/login",
-                                "/sign-up",
-                                "/api/v1/public/**",
+                .authorizeRequests()
+                .antMatchers("/login", "/sign-up").permitAll()
+                .antMatchers("/api/v1/public/**").permitAll()
+                .antMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                .antMatchers("/user" ,"api/v1/order/**").hasRole("USER")
+                .antMatchers("/api/v1/admin/**","api/v1/order/**").hasRole("ADMIN")
+                .anyRequest().authenticated();
 
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-
-                        .requestMatchers("/user").hasRole("USER")
-                        .anyRequest().authenticated()
-                );
-
-        http.addFilterBefore(
-                jwtAuthFilter,
-                UsernamePasswordAuthenticationFilter.class
-        );
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

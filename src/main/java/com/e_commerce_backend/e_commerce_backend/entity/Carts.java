@@ -1,6 +1,6 @@
 package com.e_commerce_backend.e_commerce_backend.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
