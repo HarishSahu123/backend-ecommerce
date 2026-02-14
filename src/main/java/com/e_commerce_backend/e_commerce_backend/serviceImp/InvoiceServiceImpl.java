@@ -20,15 +20,13 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final InvoicePdfGenerator invoicePdfGenerator;
 
-    private final InvoiceHtmlGenerator invoiceHtmlGenerator;
 
     public InvoiceServiceImpl(OrderRepository orderRepository,
                               InvoiceRepository invoiceRepository,
-                              InvoicePdfGenerator invoicePdfGenerator, InvoiceHtmlGenerator invoiceHtmlGenerator) {
+                              InvoicePdfGenerator invoicePdfGenerator) {
         this.orderRepository = orderRepository;
         this.invoiceRepository = invoiceRepository;
         this.invoicePdfGenerator = invoicePdfGenerator;
-        this.invoiceHtmlGenerator = invoiceHtmlGenerator;
     }
 
     @Override
