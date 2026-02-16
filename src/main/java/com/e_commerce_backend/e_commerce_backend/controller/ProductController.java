@@ -11,6 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.core.io.Resource;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -31,26 +44,26 @@ public class ProductController {
         return new ResponseEntity<>(productResponse ,HttpStatus.CREATED);
     }
 
-    @GetMapping("/public/products")
+    @GetMapping("/v1/public/products")
     public ResponseEntity<ProductResponse> getAllProduct(@RequestParam (name = "pageNumber" ,defaultValue = AppConstants.PAGE_NUMBER,required = false)  Integer pageNumber,
                                                          @RequestParam(name = "pageSize" ,defaultValue = AppConstants.PAGE_SIZE ,required = false) Integer pageSize,
                                                          @RequestParam(name = "sortBy" ,defaultValue = AppConstants.SORT_PRODUCT_BY ,required = false) String sortBy,
                                                          @RequestParam(name = "sortOrder" ,defaultValue = AppConstants.SORT_DIR ,required = false)  String sortOrder
                                                          ){
         ProductResponse productList= productService.getAllProduct(pageNumber, pageSize ,sortBy,sortOrder );
-        return new ResponseEntity<>(productList,HttpStatus.FOUND);
+        return new ResponseEntity<>(productList,HttpStatus.OK);
     }
 
     @GetMapping("/public/category/{categoryId}/product")
     public ResponseEntity<ProductResponse> getAllProductByCategory(@PathVariable Long categoryId){
         ProductResponse productList=productService.getAllProductByCategory(categoryId);
-        return new ResponseEntity<>(productList ,HttpStatus.FOUND);
+        return new ResponseEntity<>(productList ,HttpStatus.OK);
     }
 
     @GetMapping("/public/product/keyword/{keyword}")
     public ResponseEntity<ProductResponse> getProductsByKeywords(@PathVariable String keyword ){
        ProductResponse productResponse= productService.searchProductByKeyword(keyword);
-        return new ResponseEntity<>(productResponse ,HttpStatus.FOUND);
+        return new ResponseEntity<>(productResponse ,HttpStatus.OK);
     }
 
     @PutMapping("/admin/product/{productId}")
@@ -77,7 +90,18 @@ public class ProductController {
     public ResponseEntity<ProductResponse> getAllProductSavedByUser(){
         Long userId = authUtil.loggedInUserId();
         ProductResponse products = productService.getAllProductSavedByUser(userId);
-        return new ResponseEntity<>(products ,HttpStatus.FOUND);
+        return new ResponseEntity<>(products ,HttpStatus.OK);
     }
+
+    @GetMapping("/v1/public/products/image/{fileName}")
+    public ResponseEntity<Resource> getImage(@PathVariable String fileName) {
+        Resource resource = productService.getProductImage(fileName);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)  // ⚠ IMPORTANT
+                .body(resource);
+    }
+
+
 
 }

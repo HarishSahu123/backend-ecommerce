@@ -4,6 +4,7 @@ import com.e_commerce_backend.e_commerce_backend.entity.Dto.ProductDTO;
 import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.ProductResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.core.io.Resource;
 import java.io.IOException;
 
 public interface ProductService {
@@ -31,6 +32,9 @@ public interface ProductService {
     ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException;
 
     ProductResponse getAllProductSavedByUser(Long userId);
+
+    //get image
+     Resource getProductImage(String fileName);
 
     //UpdateProductImage
     //getProductBySeller

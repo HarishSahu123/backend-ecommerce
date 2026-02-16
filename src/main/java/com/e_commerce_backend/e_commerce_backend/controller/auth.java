@@ -2,6 +2,7 @@ package com.e_commerce_backend.e_commerce_backend.controller;
 
 import com.e_commerce_backend.e_commerce_backend.entity.Dto.UserDTO;
 import com.e_commerce_backend.e_commerce_backend.entity.Request.LoginRequestdto;
+import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.CommonApiResponse;
 import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.LoginResponsedto;
 import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.UserResponseDTO;
 import com.e_commerce_backend.e_commerce_backend.serviceImp.AuthService;
@@ -9,12 +10,10 @@ import com.e_commerce_backend.e_commerce_backend.serviceImp.UserRoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/v1/public")
 public class auth {
     @Autowired
@@ -39,10 +38,11 @@ public class auth {
 
 
     @PostMapping("/createUser")
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserDTO user){
+    public ResponseEntity<CommonApiResponse> createUser(@RequestBody UserDTO user){
         UserResponseDTO user1 = userRoleService.createUser(user);
-        ResponseEntity<UserResponseDTO> userEntityResponseEntity = new ResponseEntity<>(user1, HttpStatus.CREATED);
-        return userEntityResponseEntity;
+        CommonApiResponse commonApiResponse=new CommonApiResponse<>(true ,"User create successfully" ,user1);
+        return new ResponseEntity<>(commonApiResponse ,HttpStatus.OK
+        );
     }
 
 }

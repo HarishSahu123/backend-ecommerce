@@ -18,13 +18,6 @@ public class UserResponseDTO {
     // Role info (flattened, no RoleEntity exposure)
     private int roleId;
     private String roleName;
-
-    // Child objects as DTOs (recommended)
-    private List<AddressDTO> addresses;
-
-    // Only product IDs to avoid heavy payload
-    private Set<Long> productIds;
-
     private Instant creationTimestamp;
     private Instant updateTimestamp;
 

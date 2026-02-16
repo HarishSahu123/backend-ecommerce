@@ -12,6 +12,7 @@ import com.e_commerce_backend.e_commerce_backend.repository.ProductRepository;
 import com.e_commerce_backend.e_commerce_backend.repository.UserRepository;
 import com.e_commerce_backend.e_commerce_backend.services.ProductService;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.core.io.Resource;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -142,21 +149,25 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
-        //Step 1 -> Get product from DB
-        Product productFromDb = productRepository.findById(productId).orElseThrow(() ->
-                new ResourceNotFoundException("Prodcut", "ProdcutId", productId));
-        //Step -2-> Upload the image to Serve
-        //Step-3 -> Get file name of Uploaded image
-        String path="images/";
-        String fileName=fileService.uploadImage(path ,image);
-        //Step-4 -> Update the new file to the product's image name
+
+        if (image == null || image.isEmpty()) {
+            throw new RuntimeException("Image file is empty");
+        }
+
+        Product productFromDb = productRepository.findById(productId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Product", "ProductId", productId));
+
+        String path = "images/";
+        String fileName = fileService.uploadImage(path, image);
+
         productFromDb.setImage(fileName);
 
-        //Step 5->Save updated product
-        Product updatedProduct=productRepository.save(productFromDb);
-        //step-6 ->  return DTO after mapping product to DTO
-        return modelMapper.map(updatedProduct ,ProductDTO.class);
+        Product updatedProduct = productRepository.save(productFromDb);
+
+        return modelMapper.map(updatedProduct, ProductDTO.class);
     }
+
 
     @Override
     public ProductResponse getAllProductSavedByUser(Long userId) {
@@ -170,4 +181,27 @@ public class ProductServiceImpl implements ProductService {
         return productResponse;
     }
 
+    @Override
+    public Resource getProductImage(String fileName) {
+
+        try {
+            Path imagePath = Paths.get("images")
+                    .toAbsolutePath()
+                    .normalize();
+
+            Path filePath = imagePath.resolve(fileName);
+
+            if (!Files.exists(filePath)) {
+                throw new RuntimeException("Image not found: " + fileName);
+            }
+
+            return new UrlResource(filePath.toUri());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error retrieving image", e);
+        }
+    }
+
 }
+
+

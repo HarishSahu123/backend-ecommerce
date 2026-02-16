@@ -34,22 +34,29 @@ public class SpringSecurityConfig {
 
         http
                 .csrf().disable()
-
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-
                 .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
                 .and()
-
                 .authorizeRequests()
-                .antMatchers("/login", "/sign-up").permitAll()
-                .antMatchers("/api/v1/public/**").permitAll()
-                .antMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
-                .antMatchers("/user" ,"api/v1/order/**").hasRole("USER")
-                .antMatchers("/api/v1/admin/**","api/v1/order/**").hasRole("ADMIN")
-                .anyRequest().authenticated();
+                .antMatchers(
+                        "/login",
+                        "/sign-up",
+                        "/api/payments/webhook/**",
+                        "/api/v1/public/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**",
+                        "/api//v1/public/**"
+                ).permitAll()
+                .antMatchers("/api/v1/user/**").hasRole("USER")
+                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().disable()        // 🔥 VERY IMPORTANT
+                .httpBasic().disable();       // 🔥 VERY IMPORTANT
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
