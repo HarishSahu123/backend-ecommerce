@@ -36,6 +36,9 @@ public interface ProductService {
     //get image
      Resource getProductImage(String fileName);
 
+   //get single product details
+    ProductDTO getProductDetails(Long productId);
+
     //UpdateProductImage
     //getProductBySeller
     //getProductCount

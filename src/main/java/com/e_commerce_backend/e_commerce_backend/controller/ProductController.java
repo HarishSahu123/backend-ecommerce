@@ -4,6 +4,7 @@ package com.e_commerce_backend.e_commerce_backend.controller;
 import com.e_commerce_backend.e_commerce_backend.Utility.helperClass.AuthUtil;
 import com.e_commerce_backend.e_commerce_backend.config.AppConstants;
 import com.e_commerce_backend.e_commerce_backend.entity.Dto.ProductDTO;
+import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.CommonApiResponse;
 import com.e_commerce_backend.e_commerce_backend.entity.dtoResponse.ProductResponse;
 import com.e_commerce_backend.e_commerce_backend.serviceImp.ProductServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -54,13 +55,13 @@ public class ProductController {
         return new ResponseEntity<>(productList,HttpStatus.OK);
     }
 
-    @GetMapping("/public/category/{categoryId}/product")
+    @GetMapping("/v1/public/category/{categoryId}/product")
     public ResponseEntity<ProductResponse> getAllProductByCategory(@PathVariable Long categoryId){
         ProductResponse productList=productService.getAllProductByCategory(categoryId);
         return new ResponseEntity<>(productList ,HttpStatus.OK);
     }
 
-    @GetMapping("/public/product/keyword/{keyword}")
+    @GetMapping("/v1/public/product/keyword/{keyword}")
     public ResponseEntity<ProductResponse> getProductsByKeywords(@PathVariable String keyword ){
        ProductResponse productResponse= productService.searchProductByKeyword(keyword);
         return new ResponseEntity<>(productResponse ,HttpStatus.OK);
@@ -102,6 +103,12 @@ public class ProductController {
                 .body(resource);
     }
 
+    @GetMapping("/v1/public/product/{productId}")
+    public ResponseEntity<CommonApiResponse> getProductDetails(@PathVariable Long productId){
+        ProductDTO productResponse= productService.getProductDetails(productId);
+        CommonApiResponse productdetail=new CommonApiResponse<>(true ,"Request Has been successfullly " ,productResponse);
+        return new ResponseEntity<>(productdetail ,HttpStatus.OK);
+    }
 
 
 }

@@ -1,5 +1,6 @@
 package com.e_commerce_backend.e_commerce_backend.serviceImp;
 
+import com.e_commerce_backend.e_commerce_backend.Exception.IllegalArgumentException;
 import com.e_commerce_backend.e_commerce_backend.Exception.ResourceNotFoundException;
 import com.e_commerce_backend.e_commerce_backend.Utility.helperClass.AuthUtil;
 import com.e_commerce_backend.e_commerce_backend.entity.Category;
@@ -200,6 +201,22 @@ public class ProductServiceImpl implements ProductService {
         } catch (Exception e) {
             throw new RuntimeException("Error retrieving image", e);
         }
+    }
+
+    @Override
+    public ProductDTO getProductDetails(Long productId) {
+        if(productId ==null ){
+            throw new IllegalArgumentException("invalid product id");
+        }
+        // ✅ 1. Check product exists
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Product", "productId", productId)
+                );
+
+        // ✅ 2. Convert Entity → DTO
+        ProductDTO productResponse =modelMapper.map(product ,ProductDTO.class);
+        return productResponse;
     }
 
 }
