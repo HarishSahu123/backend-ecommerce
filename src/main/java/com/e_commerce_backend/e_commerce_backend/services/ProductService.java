@@ -29,6 +29,7 @@ public interface ProductService {
 
     ProductDTO deleteProduct(Long productId);
 
+    //UpdateProductImage
     ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException;
 
     ProductResponse getAllProductSavedByUser(Long userId);
@@ -39,7 +40,7 @@ public interface ProductService {
    //get single product details
     ProductDTO getProductDetails(Long productId);
 
-    //UpdateProductImage
+
     //getProductBySeller
     //getProductCount
 }
