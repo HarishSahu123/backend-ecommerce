@@ -21,7 +21,7 @@ public class MyGlobalExceptionHadler {
         errorDetails.put("error", "Resource Not Found");
         errorDetails.put("message", ex.getMessage());
         errorDetails.put("timestamp", Instant.now());
-        errorDetails.put("status", HttpStatus.NOT_FOUND.value());
+        errorDetails.put("status", HttpStatus.OK.value());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
@@ -31,7 +31,7 @@ public class MyGlobalExceptionHadler {
     public ResponseEntity<Map<String, Object>> handleAPIException(APIException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("status", HttpStatus.OK.value());
         errorResponse.put("error", "API Exception");
         errorResponse.put("message", ex.getMessage());
 
@@ -43,7 +43,7 @@ public class MyGlobalExceptionHadler {
     public ResponseEntity<Map<String ,Object>> handleIllegalArgumentException(IllegalArgumentException e){
         Map<String ,Object> errorResponse=new HashMap<>();
         errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("status", HttpStatus.OK.value());
         errorResponse.put("error", "IllegalArgumentException");
         errorResponse.put("message", e.getMessage());
         return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
