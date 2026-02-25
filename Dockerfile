@@ -1,12 +1,18 @@
-# Use Java 11 base image
+# -------- Build Stage --------
+FROM maven:3.8.6-eclipse-temurin-11 AS build
+
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+# -------- Run Stage --------
 FROM eclipse-temurin:11-jdk-alpine
 
 WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 
-# Copy built jar file
-COPY target/*.jar app.jar
-
-# Expose port (Render will inject PORT env variable)
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
