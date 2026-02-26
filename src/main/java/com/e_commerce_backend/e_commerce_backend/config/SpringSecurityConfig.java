@@ -3,6 +3,7 @@ package com.e_commerce_backend.e_commerce_backend.config;
 
 import com.e_commerce_backend.e_commerce_backend.Utility.AuthEntryPointJwt;
 import com.e_commerce_backend.e_commerce_backend.Utility.JwtAuthFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,8 @@ public class SpringSecurityConfig {
 
     private final AuthEntryPointJwt unauthorizedHandler;
     private final JwtAuthFilter jwtAuthFilter;
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
 
     public SpringSecurityConfig(AuthEntryPointJwt unauthorizedHandler,
                                 JwtAuthFilter jwtAuthFilter) {
@@ -77,7 +80,7 @@ public class SpringSecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedOrigins(List.of(frontendUrl));
         configuration.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
