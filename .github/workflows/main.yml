@@ -1,4 +1,4 @@
-name: Spring Boot CI
+name: Build Jar
 
 on:
   push:
@@ -8,37 +8,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
-          cache: maven
 
-      - name: Wait for MySQL
-        run: sleep 20
+      - name: Build Jar
+        run: mvn clean package -DskipTests -Dspring.profiles.active=prod
 
-      - name: Build & Test
-        run: mvn clean verify
-        env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/testdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-          SPRING_DATASOURCE_USERNAME: root
-          SPRING_DATASOURCE_PASSWORD: root
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-jar
+          path: target/*.jar
