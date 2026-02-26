@@ -63,6 +63,8 @@ public class SpringSecurityConfig {
                         "/api//v1/public/**"
                 ).permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/actuator/health").permitAll()
+                .antMatchers("/actuator/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/user/**").hasRole("USER")
                 .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
