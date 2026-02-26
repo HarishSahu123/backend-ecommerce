@@ -60,11 +60,10 @@ public class SpringSecurityConfig {
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**",
-                        "/api//v1/public/**"
+                        "/api//v1/public/**",
+                        "/actuator/**"
                 ).permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/actuator/health").permitAll()
-                .antMatchers("/actuator/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/user/**").hasRole("USER")
                 .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
